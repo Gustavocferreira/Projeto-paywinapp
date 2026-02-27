@@ -1,0 +1,120 @@
+version: '3.9'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: paywin_postgres
+    environment:
+      POSTGRES_DB: paywinapp
+      POSTGRES_USER: paywinuser
+      POSTGRES_PASSWORD: paywinpass_dev_only
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=pt_BR.UTF-8"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U paywinuser -d paywinapp"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - paywin_network
+
+  # PgBouncer - Connection Pooler
+  # pgbouncer:
+    #image: bitnami/pgbouncer:latest
+    #container_name: paywin_pgbouncer
+    #environment:
+      #DATABASE_URL: "postgres://paywinuser:paywinpass_dev_only@postgres:5432/paywinapp"
+      #POOL_MODE: transaction
+      #MAX_CLIENT_CONN: 1000
+      #DEFAULT_POOL_SIZE: 25
+      #MIN_POOL_SIZE: 5
+      #RESERVE_POOL_SIZE: 5
+      #RESERVE_POOL_TIMEOUT: 3
+      #SERVER_IDLE_TIMEOUT: 600
+      #MAX_DB_CONNECTIONS: 100
+    #ports:
+      #- "6432:5432"
+    #depends_on:
+      #postgres:
+        #condition: service_healthy
+    #networks:
+      #- paywin_network 
+
+  # Python API (FastAPI + SQLAlchemy)
+  python-api:
+    build:
+      context: ./services/python-api
+      dockerfile: Dockerfile
+    container_name: paywin_python_api
+    environment:
+      DATABASE_URL: "postgresql://paywinuser:paywinpass_dev_only@postgres:5432/paywinapp"
+      SECRET_KEY: "dev-secret-key-change-in-production"
+      ALGORITHM: "HS256"
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      ENVIRONMENT: "development"
+      LOG_LEVEL: "info"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./services/python-api:/app
+    depends_on:
+      - postgres
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - paywin_network
+
+  # Go API (High Performance Routes)
+  go-api:
+    build:
+      context: ./services/go-api
+      dockerfile: Dockerfile
+    container_name: paywin_go_api
+    environment:
+      DATABASE_URL: "postgres://paywinuser:paywinpass_dev_only@postgres:5432/paywinapp?sslmode=disable"
+      PORT: "8080"
+      ENVIRONMENT: "development"
+      LOG_LEVEL: "info"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./services/go-api:/app
+    depends_on:
+      - postgres
+    networks:
+      - paywin_network
+
+  # Next.js Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: development
+    container_name: paywin_frontend
+    environment:
+      NEXT_PUBLIC_PYTHON_API_URL: "http://localhost:8000"
+      NEXT_PUBLIC_GO_API_URL: "http://localhost:8080"
+      NODE_ENV: "development"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - python-api
+      - go-api
+    networks:
+      - paywin_network
+
+networks:
+  paywin_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
