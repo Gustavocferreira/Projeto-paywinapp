@@ -1,4 +1,4 @@
-module paywin-go
+module paywinapp-go
 
 go 1.24.0
 

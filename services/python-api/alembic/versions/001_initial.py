@@ -110,7 +110,7 @@ def upgrade() -> None:
         sa.Column('user_id', sa.Integer(), nullable=False),
         sa.Column('role', sa.Enum('user', 'agent', name='messagerole'), nullable=False),
         sa.Column('content', sa.Text(), nullable=False),
-        sa.Column('metadata', sa.Text(), nullable=True),
+        sa.Column('extra_data', sa.Text(), nullable=True),
         sa.Column('session_id', sa.String(length=100), nullable=True),
         sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
         sa.ForeignKeyConstraint(['user_id'], ['users.id'], name='fk_chat_messages_user_id_users'),

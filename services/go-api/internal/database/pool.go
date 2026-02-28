@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -17,11 +18,11 @@ func NewPool(ctx context.Context, connString string) (*pgxpool.Pool, error) {
 
 	// Pool configuration optimized for PgBouncer
 	// PgBouncer já gerencia o pool, então minimizamos o pool local
-	config.MaxConns = 10           // Limite local (PgBouncer gerencia o real)
-	config.MinConns = 2            // Conexões mínimas
-	config.MaxConnLifetime = 0     // PgBouncer gerencia lifetime
-	config.MaxConnIdleTime = 0     // PgBouncer gerencia idle
-	config.HealthCheckPeriod = 0   // Desabilita health check local
+	config.MaxConns = 10                       // Limite local (PgBouncer gerencia o real)
+	config.MinConns = 2                        // Conexões mínimas
+	config.MaxConnLifetime = 0                 // PgBouncer gerencia lifetime
+	config.MaxConnIdleTime = 0                 // PgBouncer gerencia idle
+	config.HealthCheckPeriod = 1 * time.Minute // Health check a cada 1 minuto
 
 	pool, err := pgxpool.NewWithConfig(ctx, config)
 	if err != nil {

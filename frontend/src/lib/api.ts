@@ -29,7 +29,7 @@ export const goApi: AxiosInstance = axios.create({
 // Request interceptor - adicionar token de autenticação
 pythonApi.interceptors.request.use(
   (config) => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -40,7 +40,7 @@ pythonApi.interceptors.request.use(
 
 goApi.interceptors.request.use(
   (config) => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -56,7 +56,7 @@ pythonApi.interceptors.response.use(
     if (error.response?.status === 401) {
       // Token expirado ou inválido
       if (typeof window !== 'undefined') {
-        localStorage.removeItem('access_token');
+        localStorage.removeItem('token');
         window.location.href = '/auth/login';
       }
     }
@@ -64,4 +64,7 @@ pythonApi.interceptors.response.use(
   }
 );
 
-export default { pythonApi, goApi };
+// Export pythonApi como 'api' para facilitar importação
+export const api = pythonApi;
+
+export default { pythonApi, goApi, api };

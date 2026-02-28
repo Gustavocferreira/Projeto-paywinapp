@@ -6,7 +6,7 @@ Separados dos models SQLAlchemy para seguir o padrão do FastAPI
 from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel, EmailStr, Field, validator
+from pydantic import BaseModel, EmailStr, Field, field_validator
 
 
 # ===== USER SCHEMAS =====
@@ -161,11 +161,6 @@ class GoalResponse(GoalBase):
     class Config:
         from_attributes = True
 
-    @validator('progress_percentage', 'remaining_amount', pre=False, always=True)
-    def compute_calculated_fields(cls, v, values, field):
-        """Computar campos calculados se não estiverem presentes"""
-        return v
-
 
 # ===== CHAT SCHEMAS =====
 
@@ -181,7 +176,7 @@ class ChatMessageResponse(ChatMessageBase):
     id: int
     user_id: int
     role: str
-    metadata: Optional[str] = None
+    extra_data: Optional[str] = None
     session_id: Optional[str] = None
     created_at: datetime
 
@@ -233,8 +228,9 @@ class DataDeletionRequest(BaseModel):
     confirm: bool = Field(..., description="Confirmação explícita")
     reason: Optional[str] = Field(None, max_length=500)
 
-    @validator('confirm')
-    def must_confirm(cls, v):
+    @field_validator('confirm')
+    @classmethod
+    def must_confirm(cls, v: bool) -> bool:
         if not v:
             raise ValueError('É necessário confirmar a exclusão de dados')
         return v

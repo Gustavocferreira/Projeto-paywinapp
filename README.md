@@ -73,8 +73,40 @@ docker-compose logs -f
 - Frontend: http://localhost:3000
 - API Python: http://localhost:8000
 - API Go: http://localhost:8080
-- PostgreSQL: localhost:5432 (via PgBouncer: 6432)
+- PostgreSQL: localhost:5432
 ```
+
+### 💾 Persistência de Dados
+
+Os dados do PostgreSQL são **persistentes** através do volume Docker `paywin_postgres_data`.
+
+**✅ Dados persistem após:**
+- `docker-compose down` (parar containers)
+- `docker-compose up -d --build` (rebuild)
+- Reinicializações do sistema
+
+**⚠️ Dados são perdidos apenas com:**
+- `docker-compose down -v` (flag `-v` remove volumes!)
+
+**📦 Fazer backup:**
+```bash
+# Windows PowerShell
+.\backup.ps1
+
+# Linux/Mac
+docker exec paywin_postgres pg_dump -U paywinuser paywinapp > backup.sql
+```
+
+**🔄 Restaurar backup:**
+```bash
+# Windows PowerShell
+.\restore-backup.ps1 -BackupFile "backup.zip"
+
+# Linux/Mac
+docker exec -i paywin_postgres psql -U paywinuser paywinapp < backup.sql
+```
+
+Veja mais detalhes em [docs/PERSISTENCIA.md](docs/PERSISTENCIA.md)
 
 ### Executar com Dev Containers (Recomendado)
 
@@ -109,6 +141,7 @@ Projeto-paywinapp/
 
 - [Arquitetura Detalhada](docs/ARCHITECTURE.md)
 - [Guia de Desenvolvimento](docs/DEVELOPMENT.md)
+- [Persistência e Backup](docs/PERSISTENCIA.md) ⭐ **Novo!**
 - [Acessibilidade](docs/ACCESSIBILITY.md)
 - [LGPD Compliance](docs/LGPD.md)
 - [API Reference](docs/API.md)

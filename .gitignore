@@ -71,3 +71,9 @@ temp/
 
 # Docker
 .docker/
+
+# SQL Backups
+*.sql
+*.sql.gz
+*.sql.zip
+backup-*.sql

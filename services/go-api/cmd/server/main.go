@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"fmt"
+	//"fmt" //erro na linha 5 = Go não permite que você deixe pacotes importados que não estão sendo usados no código. Ele trata isso como um erro de compilação.
 	"log"
 	"net/http"
 	"os"
@@ -13,7 +13,8 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
-	"github.com/jackc/pgx/v5/pgxpool"
+
+	//"github.com/jackc/pgx/v5/pgxpool" //erro na linha 16 = Go não permite que você deixe pacotes importados que não estão sendo usados no código. Ele trata isso como um erro de compilação.
 
 	"paywinapp-go/internal/database"
 	"paywinapp-go/internal/handlers"
@@ -22,7 +23,7 @@ import (
 func main() {
 	// Load configuration
 	port := getEnv("PORT", "8080")
-	dbURL := getEnv("DATABASE_URL", "postgres://paywinuser:paywinpass_dev_only@pgbouncer:5432/paywinapp?sslmode=disable")
+	dbURL := getEnv("DATABASE_URL", "postgres://paywinuser:paywinpass_dev_only@postgres:5432/paywinapp?sslmode=disable")
 
 	// Initialize database connection pool
 	ctx := context.Background()
@@ -68,10 +69,10 @@ func main() {
 	r.Route("/api/v1", func(r chi.Router) {
 		// Transaction summary (optimized for high load)
 		r.Get("/highload/transactions/summary", transactionHandler.GetSummary)
-		
+
 		// Bulk operations
 		r.Post("/highload/transactions/bulk", transactionHandler.BulkCreate)
-		
+
 		// Heavy aggregations
 		r.Get("/highload/reports/monthly", transactionHandler.GetMonthlyReport)
 		r.Get("/highload/reports/category-trends", transactionHandler.GetCategoryTrends)

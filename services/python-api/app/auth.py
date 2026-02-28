@@ -4,6 +4,7 @@ Gerenciamento de JWT, hash de senhas, etc.
 """
 
 import os
+import re
 from datetime import datetime, timedelta
 from typing import Optional
 
@@ -37,6 +38,60 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 def get_password_hash(password: str) -> str:
     """Gera hash da senha"""
     return pwd_context.hash(password)
+
+
+def validate_password_strength(password: str) -> tuple[bool, str]:
+    """
+    Valida a força da senha
+    Retorna (is_valid, message)
+    """
+    if len(password) < 8:
+        return False, "A senha deve ter pelo menos 8 caracteres"
+    
+    if len(password) > 100:
+        return False, "A senha deve ter no máximo 100 caracteres"
+    
+    # Verificar se tem pelo menos uma letra minúscula
+    if not re.search(r'[a-z]', password):
+        return False, "A senha deve conter pelo menos uma letra minúscula"
+    
+    # Verificar se tem pelo menos uma letra maiúscula
+    if not re.search(r'[A-Z]', password):
+        return False, "A senha deve conter pelo menos uma letra maiúscula"
+    
+    # Verificar se tem pelo menos um número
+    if not re.search(r'[0-9]', password):
+        return False, "A senha deve conter pelo menos um número"
+    
+    # Senhas comuns bloqueadas
+    common_passwords = [
+        "12345678", "password", "senha123", "admin123", 
+        "qwerty123", "Password1", "Senha123"
+    ]
+    if password.lower() in [p.lower() for p in common_passwords]:
+        return False, "Senha muito comum. Escolha uma senha mais segura"
+    
+    return True, "Senha válida"
+
+
+def sanitize_input(text: str, max_length: int = 255) -> str:
+    """
+    Sanitiza entrada de texto
+    Remove caracteres perigosos e limita tamanho
+    """
+    if not text:
+        return ""
+    
+    # Remove espaços extras
+    text = text.strip()
+    
+    # Limita tamanho
+    text = text[:max_length]
+    
+    # Remove caracteres de controle
+    text = ''.join(char for char in text if ord(char) >= 32 or char in '\n\r\t')
+    
+    return text
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:

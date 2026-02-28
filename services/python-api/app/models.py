@@ -222,7 +222,7 @@ class ChatMessage(Base):
     
     # Metadados opcionais (JSON-like, para flexibilidade)
     # Ex: intent detectado, entidades extraídas, etc.
-    metadata = Column(Text, nullable=True)  # JSON string
+    extra_data = Column(Text, nullable=True)  # JSON string
     
     # Sessão (para agrupar conversas)
     session_id = Column(String(100), nullable=True, index=True)
