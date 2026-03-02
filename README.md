@@ -189,7 +189,8 @@ Em breve será adicionado um CONTRIBUTING.md com mais detalhes de fluxo de contr
 ```
 ---
 
-#👤 Autor
+# 👤 Autor
+
 Gustavo Costa Ferreira
 Full-stack Developer & DevOps no Instituto do Legislativo Paulista (Alesp).
 Bacharel em TI pela Univesp.
