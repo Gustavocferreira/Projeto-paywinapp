@@ -82,8 +82,9 @@ graph TD
     D <--> E[(PostgreSQL 16)]
     F[Agente IA] -.->|Linguagem Natural| B
 ```
+---
 
-##⚡ Quick Start (Docker)
+## ⚡ Quick Start (Docker)
 Todo o ecossistema — Frontend, APIs, Banco de Dados e Pool de Conexões — é orquestrado via Docker Compose, com suporte a Dev Containers para um ambiente reprodutível.
 
 Pré‑requisitos
@@ -108,7 +109,7 @@ API Go: http://localhost:8080
 
 Banco de Dados: localhost:5432
 
-**💾 Persistência e Resiliência
+## 💾 Persistência e Resiliência
 Os dados são tratados como críticos.
 A persistência é garantida via volumes Docker (paywin_postgres_data), sobrevivendo a reinicializações e rebuilds do ambiente.
 
@@ -125,7 +126,7 @@ Windows (PowerShell):
 Unix-like:
 docker exec -i paywin_postgres psql -U paywinuser paywinapp < backup.sql
 
-***📂 Estrutura do Projeto:
+### 📂 Estrutura do Projeto:
 ```
 .
 ├── frontend/               # O Rosto (Next.js App)
@@ -137,8 +138,9 @@ docker exec -i paywin_postgres psql -U paywinuser paywinapp < backup.sql
 ├── .devcontainer/          # O Molde (Setup reprodutível para VS Code)
 └── docker-compose.yml      # O Maestro (Orquestração dos serviços)
 ```
+---
 
-**🧠 Boas Práticas e Convenções
+## 🧠 Boas Práticas e Convenções
 Privacy by Design:
 Modelagem de banco e fluxos de dados em conformidade com a LGPD desde a concepção.
 
@@ -151,7 +153,7 @@ Processamento intensivo isolado no serviço em Go; a API em Python foca em IA, v
 Infraestrutura Imutável:
 Uso de Dev Containers e Docker para eliminar o “na minha máquina funciona” e garantir ambientes consistentes.
 
-*🚀 Roadmap
+### 🚀 Roadmap
  Modelagem de dados e arquitetura base (Sprint 1)
 
  Dockerização e configuração de Dev Containers (Sprint 1)
@@ -163,8 +165,9 @@ Uso de Dev Containers e Docker para eliminar o “na minha máquina funciona” 
  Auditoria de acessibilidade, otimização de performance e Deploy (Sprint 4)
 
 Em breve será adicionado um CONTRIBUTING.md com mais detalhes de fluxo de contribuição.
+---
 
-**🤝 Contribuição
+## 🤝 Contribuição
 ```Contribuições são muito bem-vindas!
 Algumas formas de contribuir:
 
@@ -183,9 +186,9 @@ Seguir o padrão de código já adotado nos serviços
 Adicionar testes (quando aplicável) e atualizar a documentação
 Em breve será adicionado um CONTRIBUTING.md com mais detalhes de fluxo de contribuição.
 ```
---
+---
 
-*👤 Autor
+#👤 Autor
 Gustavo Costa Ferreira
 Full-stack Developer & DevOps no Instituto do Legislativo Paulista (Alesp).
 Bacharel em TI pela Univesp.
