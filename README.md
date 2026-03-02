@@ -93,11 +93,11 @@ Docker e Docker Compose instalados
 VS Code (opcional, mas recomendado)
 
 Extensão “Dev Containers” (recomendado)
-# 1. Clone o repositório e acesse o diretório
+### 1. Clone o repositório e acesse o diretório
 git clone https://github.com/Gustavocferreira/Projeto-paywinapp.git
 cd Projeto-paywinapp
 
-# 2. Suba a infraestrutura completa
+### 2. Suba a infraestrutura completa
 docker-compose up -d --build
 Serviços padrão:
 
@@ -108,6 +108,7 @@ API Python (FastAPI): http://localhost:8000
 API Go: http://localhost:8080
 
 Banco de Dados: localhost:5432
+---
 
 ## 💾 Persistência e Resiliência
 Os dados são tratados como críticos.
